@@ -8,6 +8,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import de.unibayreuth.se.taskboard.business.domain.User;
+import de.unibayreuth.se.taskboard.business.ports.UserService;
+
 import java.util.List;
 
 /**
@@ -20,21 +23,21 @@ import java.util.List;
 class LoadInitialData implements InitializingBean {
     private final TaskService taskService;
     // TODO: Fix this class after resolving the other TODOs.
-    //private final UserService userService;
+    private final UserService userService;
 
     @Override
     public void afterPropertiesSet() {
         log.info("Deleting existing data...");
-        //userService.clear();
+        userService.clear();
         taskService.clear();
         log.info("Loading initial data...");
-        //List<User> users = TestFixtures.createUsers(userService);
+        List<User> users = TestFixtures.createUsers(userService);
         List<Task> tasks = TestFixtures.createTasks(taskService);
         Task task1 = tasks.getFirst();
-        //task1.setAssigneeId(users.getFirst().getId());
+        task1.setAssigneeId(users.getFirst().getId());
         taskService.upsert(task1);
         Task task2 = tasks.getLast();
-        //task2.setAssigneeId(users.getLast().getId());
+        task2.setAssigneeId(users.getLast().getId());
         taskService.upsert(task2);
     }
 }
